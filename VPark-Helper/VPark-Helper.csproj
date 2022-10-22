@@ -11,4 +11,8 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0-dev-00285" />
+  </ItemGroup>
+
 </Project>
