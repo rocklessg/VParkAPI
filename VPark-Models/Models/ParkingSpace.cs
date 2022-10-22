@@ -8,6 +8,6 @@ namespace VPark_Models.Models
 {
     public class ParkingSpace
     {
-        
+        public string Id { get; set; }
     }
 }
