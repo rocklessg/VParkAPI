@@ -1,4 +1,33 @@
+using Serilog;
+using Serilog.Events;
+
 var builder = WebApplication.CreateBuilder(args);
+
+#region Serilog Configuration
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(
+    path: "logs\\log-.txt",
+    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+    rollingInterval: RollingInterval.Day,
+    restrictedToMinimumLevel: LogEventLevel.Information
+    ).CreateLogger();
+try
+{
+    Log.Information("VPark Application is Starting..");
+    //CreateHostBuilder(args).Build().Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "VParrk Application Failed to start");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+builder.Host.UseSerilog();
+
+#endregion
 
 // Add services to the container.
 

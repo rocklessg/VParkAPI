@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0-dev-00285" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VPark-Models\VPark-Models.csproj" />
   </ItemGroup>
 
