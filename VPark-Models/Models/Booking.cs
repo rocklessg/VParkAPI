@@ -29,6 +29,6 @@ namespace VPark_Models
 {
     public enum ServiceType
     {
-        hour = 0, Day = 1
+        hour = 1, Day = 2
     }
 }

@@ -1,4 +1,5 @@
-﻿using VPark_Models.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using VPark_Models.Models;
 
 namespace VPark_Models
 {
@@ -12,17 +13,18 @@ namespace VPark_Models
         public DateTime UpdatedAt { get; set; }
 
         //Nav properties
+        [Key]
         public string BookingId { get; set; }
         public Booking Booking { get; set; }
     }
 
     public enum PaymentMethod
     {
-        Card = 0, BankTransfer = 1
+        Card = 1, BankTransfer = 2
     }
 
     public enum Status
     {
-        pending = 0, failed = 1, suceeded = 3
+        pending = 1, failed = 2, suceeded = 3
     }
 }
