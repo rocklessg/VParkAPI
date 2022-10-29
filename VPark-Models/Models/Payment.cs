@@ -25,6 +25,6 @@ namespace VPark_Models
 
     public enum Status
     {
-        pending = 1, failed = 2, suceeded = 3
+       Failed = 0, Pending = 1, Success = 2
     }
 }
