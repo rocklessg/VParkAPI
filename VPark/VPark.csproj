@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0-dev-00285" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10" />
   </ItemGroup>
 
   <ItemGroup>
