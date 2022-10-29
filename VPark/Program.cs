@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using VPark.Extensions;
+using VPark_Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.ResolveSwagger();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
