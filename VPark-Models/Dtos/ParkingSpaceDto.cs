@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPark_Models.Models
+namespace VPark_Models.Dtos
 {
-    public class ParkingSpace : BaseEntity
+    public class ParkingSpaceDto
     {
+        public string Id { get; set; }
         public string Name { get; set; }
-        public bool Isbooked { get; set; } = false;
+        public bool Isbooked { get; set; }
     }
 }
