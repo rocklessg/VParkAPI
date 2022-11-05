@@ -20,11 +20,11 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     Log.Information("VPark Application is Starting..");
-    //CreateHostBuilder(args).Build().Run();
+    //builder.Build().Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "VParrk Application Failed to start");
+    Log.Fatal(ex, "VPark Application Failed to start");
 }
 finally
 {

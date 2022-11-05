@@ -8,8 +8,8 @@ namespace VPark.Extensions
         public static void ResolveDependencyInjectionServices(this IServiceCollection services)
         {
             services.AddScoped<IParkingSpaceRepository, ParkingSpaceRepository>();
-            //services.AddScoped<IBooking, Booking>();
-            //services.AddScoped<IPayment, Payment>();
+           // services.AddScoped<ILogger, Logger<ParkingSpaceRepository>>();
+            //services.AddScoped<IInterface, Implementation>();
         }
     }
 }
