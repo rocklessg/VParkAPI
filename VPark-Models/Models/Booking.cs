@@ -16,7 +16,7 @@ namespace VPark_Models.Models
 
         //Nav properties
         public bool PaymentStatus { get; set; }
-        public Payment Payment { get; set; }       
+        public Payment Payment { get; set; }
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
         public string ParkingSpaceId { get; set; }

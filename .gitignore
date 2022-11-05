@@ -359,5 +359,9 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+
+ VPark/appsettings.json
+ VPark/logs
+
 # Fody - auto-generated XML schema
 FodyWeavers.xsd

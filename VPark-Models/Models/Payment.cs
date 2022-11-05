@@ -4,7 +4,7 @@ using VPark_Models.Models;
 namespace VPark_Models
 {
     public class Payment
-    {       
+    {
         public string PaymentReference { get; set; }
         public decimal Amount { get; set; }
         public Status Status { get; set; }
