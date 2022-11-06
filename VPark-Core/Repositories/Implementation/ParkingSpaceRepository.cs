@@ -30,7 +30,7 @@ namespace VPark_Core.Repositories.Implementation
             var parkingLot = new ParkingSpace
             {
                 Name = newParkingSpace.Name,
-                Isbooked = newParkingSpace.Isbooked,
+                IsBooked = newParkingSpace.Isbooked,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             };
@@ -60,7 +60,7 @@ namespace VPark_Core.Repositories.Implementation
             if (parkingLot != null)
             {
                 parkingLot.Name = updateParkingSpace.Name;
-                parkingLot.Isbooked = updateParkingSpace.Isbooked;
+                parkingLot.IsBooked = updateParkingSpace.Isbooked;
                 parkingLot.ModifiedAt = DateTime.UtcNow;
 
                 _context.Update(parkingLot);
@@ -93,7 +93,7 @@ namespace VPark_Core.Repositories.Implementation
         public async Task<Response<IEnumerable<ParkingSpace>>> GetBookedParkingSpacesAsync()
         {
             var parkingLots = await _context.ParkingSpaces.ToListAsync();
-            var bookedParkingSpaces = parkingLots.Where(x => x.Isbooked);
+            var bookedParkingSpaces = parkingLots.Where(x => x.IsBooked);
             var response = new Response<IEnumerable<ParkingSpace>>(StatusCodes.Status200OK, true, "List of all Booked Parking spaces", bookedParkingSpaces);
             return response;
         }
