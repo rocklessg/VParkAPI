@@ -23,10 +23,7 @@ namespace VPark_Models.Models
         public ParkingSpace ParkingSpace { get; set; }
 
     }
-}
 
-namespace VPark_Models
-{
     public enum ServiceType
     {
         Hour = 1, Day = 2
