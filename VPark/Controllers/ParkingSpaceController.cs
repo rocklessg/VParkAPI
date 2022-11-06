@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Models.Dtos;
 using VPark_Models.Models;
@@ -19,6 +20,7 @@ namespace VPark.Controllers
             _logger = logger;
         }
 
+        [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]
         [HttpGet("All-ParkingSpace")]
         public async Task<IActionResult> GetAllParkingSpacesAsync()
         {

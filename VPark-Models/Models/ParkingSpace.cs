@@ -9,6 +9,6 @@ namespace VPark_Models.Models
     public class ParkingSpace : BaseEntity
     {
         public string Name { get; set; }
-        public bool Isbooked { get; set; } = false;
+        public bool IsBooked { get; set; } = false;
     }
 }
