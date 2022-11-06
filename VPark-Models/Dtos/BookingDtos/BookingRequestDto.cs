@@ -3,28 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VPark_Models.Models;
 
-namespace VPark_Models.Models
+namespace VPark_Models.Dtos.BookingDtos
 {
-    public class Booking : BaseEntity
+    public class BookingRequestDto
     {
         public ServiceType ServiceType { get; set; }
-        public string Reference { get; set; }
         public DateTime Date { get; set; }
         public DateTime Duration { get; set; }
-
-        //Nav properties
         public bool PaymentStatus { get; set; }
         public Payment Payment { get; set; }
         public string CustomerId { get; set; }
-        public Customer Customer { get; set; }
         public string ParkingSpaceId { get; set; }
-        public ParkingSpace ParkingSpace { get; set; }
-
-    }
-
-    public enum ServiceType
-    {
-        Hour = 1, Day = 2
     }
 }
