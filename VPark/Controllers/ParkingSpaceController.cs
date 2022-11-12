@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using VPark_Core.Repositories.Interfaces;
@@ -21,6 +22,7 @@ namespace VPark.Controllers
         }
 
         [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]
+        //[Authorize]
         [HttpGet("All-ParkingSpace")]
         public async Task<IActionResult> GetAllParkingSpacesAsync()
         {

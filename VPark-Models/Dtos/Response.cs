@@ -13,6 +13,7 @@ namespace VPark_Models.Dtos
         public bool Succeeded { get; set; }
         public string Message { get; set; }
         public int StatusCode { get; set; }
+        public DateTime? ExpireDate { get; set; }   
 
         public Response(int statusCode, bool success, string msg, T data)
         {
