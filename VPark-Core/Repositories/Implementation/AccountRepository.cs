@@ -54,7 +54,7 @@ namespace VPark_Core.Repositories.Implementation
             return new Response<IdentityResult>()
             {
                 Succeeded = true,
-                Message = "User have been Successfully Registered "
+                Message = "User Registered Successfully",
             };
 
            
