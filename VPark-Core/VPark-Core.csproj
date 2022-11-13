@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VPark-Data\VPark-Data.csproj" />
+    <ProjectReference Include="..\VPark-Helper\VPark-Helper.csproj" />
     <ProjectReference Include="..\VPark-Models\VPark-Models.csproj" />
   </ItemGroup>
 

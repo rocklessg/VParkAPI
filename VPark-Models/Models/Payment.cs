@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using VPark_Models.Models;
 
 namespace VPark_Models
@@ -20,11 +21,22 @@ namespace VPark_Models
 
     public enum PaymentMethod
     {
-        Card = 1, BankTransfer = 2
+        Card = 1,
+        BankTransfer = 2
+    }
+
+    public enum PaymentMethodNameAcronym
+    {
+        [Description("Card Payment")]
+        CP,
+        [Description("Bank Transfer")]
+        BT
     }
 
     public enum Status
     {
-       Failed = 0, Pending = 1, Success = 2
+        Failed = 0,
+        Pending = 1,
+        Success = 2
     }
 }
