@@ -11,6 +11,8 @@ namespace VPark.Extensions
             services.AddScoped<ILogger, Logger<ParkingSpaceRepository>>();
             services.AddScoped<IAccountRepository, AccountRepository>();   
            
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
             //services.AddScoped<IInterface, Implementation>();
         }
     }

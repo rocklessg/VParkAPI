@@ -255,8 +255,8 @@ namespace VPark_Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("Duration")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("Duration")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");

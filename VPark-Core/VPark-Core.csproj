@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VPark-Data\VPark-Data.csproj" />
+    <ProjectReference Include="..\VPark-Helper\VPark-Helper.csproj" />
     <ProjectReference Include="..\VPark-Models\VPark-Models.csproj" />
   </ItemGroup>
 

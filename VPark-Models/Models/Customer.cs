@@ -3,7 +3,7 @@ using VPark_Models.Models;
 
 namespace VPark_Models
 {
-    public class Customer 
+    public class Customer
     {
         [Key]
         public string AppUserId { get; set; }
