@@ -34,24 +34,24 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
     opt.Password.RequireUppercase = true;
 })
 .AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddAuthentication(auth =>
-{
-    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(opt =>
-{
-    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,        
-        ValidAudience = builder.Configuration["AuthSettings:Audience"],
-        ValidIssuer = builder.Configuration["C:Issuer"],
-        RequireExpirationTime = true,   
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
-        ValidateIssuerSigningKey = true
-    };
-});
+//builder.Services.AddAuthentication(auth =>
+//{
+//    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(opt =>
+//{
+//    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,        
+//        ValidAudience = builder.Configuration["AuthSettings:Audience"],
+//        ValidIssuer = builder.Configuration["C:Issuer"],
+//        RequireExpirationTime = true,   
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
+//        ValidateIssuerSigningKey = true
+//    };
+//});
 builder.Services.ResolveDependencyInjectionServices();
 builder.Services.AddControllers();
 
