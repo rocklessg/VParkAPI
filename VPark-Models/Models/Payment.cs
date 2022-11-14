@@ -28,7 +28,7 @@ namespace VPark_Models
     public enum PaymentMethodNameAcronym
     {
         [Description("Card Payment")]
-        CP,
+        CP = 1,
         [Description("Bank Transfer")]
         BT
     }

@@ -13,11 +13,9 @@ namespace VPark_Data
 {
     public class AppDbContext : IdentityDbContext
     {
-       
-
         public AppDbContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -26,8 +24,6 @@ namespace VPark_Data
 
         //    //options.UseNpgsql(Configuration.GetConnectionString("Default"));
         //}
-
-        
 
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Customer> Customers { get; set; }
