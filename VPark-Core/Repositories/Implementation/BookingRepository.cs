@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Data;
 using VPark_Helper;
+using VPark_Models;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.BookingDtos;
 using VPark_Models.Dtos.CustomerDtos;
@@ -45,7 +46,7 @@ namespace VPark_Core.Repositories.Implementation
             {
                 ServiceType = bookingRequestDto.ServiceType,
                 Date = DateTime.UtcNow.Date,
-                Duration = bookingRequestDto.Duration, // int
+                Duration = bookingRequestDto.Duration,
                 PaymentStatus = false,
                 Reference = generatedBookingReference,
                 ParkingSpaceId = parkingSpaceId,
@@ -53,11 +54,12 @@ namespace VPark_Core.Repositories.Implementation
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             };
+
             await _context.AddAsync(booking);
             await _context.SaveChangesAsync();
 
-            // payment
-            return new Response<BookingResponseDto> { Succeeded = true, Message = "Booking Successful" };
+            _logger.LogInformation("Booking parking space in progress", nameof(booking));
+            return new Response<BookingResponseDto> { Succeeded = false, Message = "Proceed to make payment" };
         }
 
         public Task<Response<IEnumerable<BookingResponseDto>>> GetBookingAsync(string customerId)

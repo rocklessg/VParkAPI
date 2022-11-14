@@ -7,10 +7,10 @@ using VPark_Models.Models;
 
 namespace VPark_Helper
 {
-    public class ServiceFee
+    public static class ServiceFee
     {
         //private readonly AppDbContext _context;
-        public static decimal GetParkingSpaceFee(ServiceType serviceType, int parkingDuration)
+        public static string GetParkingSpaceFee(ServiceType serviceType, int parkingDuration)
         {
             decimal serviceFee = 0m;
             if (serviceType == ServiceType.Hour)
@@ -31,7 +31,8 @@ namespace VPark_Helper
             {
                 serviceFee = 7500m;
             }
-            return serviceFee;
+
+            return serviceFee.ToString();
         }
     }
 }

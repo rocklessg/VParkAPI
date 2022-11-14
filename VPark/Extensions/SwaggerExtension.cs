@@ -4,7 +4,6 @@ namespace VPark.Extensions
 {
     public static class SwaggerExtension
     {
-        
         public static void ResolveSwaggerAuthorization(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
