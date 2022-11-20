@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Models.Dtos.BookingDtos;
 using VPark_Models.Dtos.CustomerDtos;
+using VPark_Models.Models;
 
 namespace VPark.Controllers
 {
@@ -11,17 +12,16 @@ namespace VPark.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingRepository _bookingRepo;
-        private readonly ILogger<BookingController> _logger;
-        public BookingController(IBookingRepository bookingRepo, ILogger<BookingController> logger)
+       
+        public BookingController(IBookingRepository bookingRepo)
         {
-            _bookingRepo = bookingRepo;
-            _logger = logger;
+            _bookingRepo = bookingRepo;           
         }
 
         [HttpPost("Add-Booking")]
-        public async Task<IActionResult> AddBookingAsync([FromQuery] BookingRequestDto bookingRequestDto, string ParkingSpaceId, CustomerDto customerDto)
+        public async Task<IActionResult> AddBookingAsync(BookingRequestDto bookingRequestDto,string parkingSpaceId,string email)
         {
-            var response = await _bookingRepo.AddBookingAsync(bookingRequestDto, ParkingSpaceId, customerDto);
+            var response = await _bookingRepo.AddBookingAsync(bookingRequestDto, parkingSpaceId, email);
             return StatusCode(response.StatusCode, response);
         }
     }

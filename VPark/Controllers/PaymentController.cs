@@ -10,15 +10,14 @@ namespace VPark.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentRepository _paymentRepository;
-        private readonly ILogger<PaymentController> _logger;
-
+       
         public PaymentController(IPaymentRepository paymentRepository, ILogger<PaymentController> logger)
         {
             _paymentRepository = paymentRepository;
-            _logger = logger;
+            
         }
 
-
+        [HttpPost]
         public async Task<IActionResult> AddPayment(PaymentDto paymentDto,string bookingId )
         {
             var response = await _paymentRepository.AddPayment(paymentDto, bookingId);

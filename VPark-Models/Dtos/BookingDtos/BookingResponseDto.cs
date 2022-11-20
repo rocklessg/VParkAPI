@@ -12,7 +12,7 @@ namespace VPark_Models.Dtos.BookingDtos
         public ServiceType ServiceType { get; set; }
         public string Reference { get; set; }
         public DateTime Date { get; set; }
-        public DateTime Duration { get; set; }
+        public int Duration { get; set; }
         public bool PaymentStatus { get; set; }
         public ParkingSpace ParkingSpace { get; set; }
     }

@@ -14,7 +14,7 @@ namespace VPark_Models.Models
         public int Duration { get; set; }
 
         //Nav properties
-        public bool PaymentStatus { get; set; }
+        public bool PaymentStatus { get; set; } = false;
         public Payment Payment { get; set; }
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
