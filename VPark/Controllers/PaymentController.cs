@@ -17,12 +17,12 @@ namespace VPark.Controllers
             
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddPayment(PaymentDto paymentDto,string bookingId )
-        {
-            var response = await _paymentRepository.AddPayment(paymentDto, bookingId);
-            return Ok(response);    
+        //[HttpPost]
+        //public async Task<IActionResult> AddPayment(PaymentDto paymentDto,string bookingId )
+        //{
+        //    var response = await _paymentRepository.AddPayment(paymentDto, bookingId);
+        //    return Ok(response);    
 
-        }
+        //}
     }
 }

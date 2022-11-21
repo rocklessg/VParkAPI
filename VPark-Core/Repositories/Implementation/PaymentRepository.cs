@@ -53,11 +53,11 @@ namespace VPark_Core.Repositories.Implementation
 
             if (getBooking.ServiceType.Equals(ServiceType.Hour))
             {
-                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(getBooking.ServiceType, getBooking.Duration);
+                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(getBooking.ServiceType, getBooking.DurationOfStay);
             }
             else
             {
-                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(ServiceType.Day, getBooking.Duration);
+                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(ServiceType.Day, getBooking.DurationOfStay);
             }
 
             var payment = new Payment
