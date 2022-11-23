@@ -12,8 +12,8 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221121095710_AllMigrationFromBegin")]
-    partial class AllMigrationFromBegin
+    [Migration("20221121144234_RenewAllMigrations")]
+    partial class RenewAllMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

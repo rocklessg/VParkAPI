@@ -47,11 +47,10 @@ namespace VPark_Core.Repositories.Implementation
             {
                 ServiceType = bookingRequestDto.ServiceType,
                 Date = DateTime.UtcNow.Date,
-                //DurationOfStay = bookingRequestDto.,
+                DurationOfStay = bookingRequestDto.Duration,
                 PaymentStatus = false,
                 Reference = generatedBookingReference,
                 ParkingSpaceId = parkingSpaceId,
-                CustomerId = user.Id,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             };

@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace VPark_Data.Migrations
 {
-    public partial class AllMigrationFromBegin : Migration
+    public partial class RenewAllMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

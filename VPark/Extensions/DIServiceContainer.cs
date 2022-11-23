@@ -1,5 +1,6 @@
 ﻿using VPark_Core.Repositories.Implementation;
 using VPark_Core.Repositories.Interfaces;
+using VPark_Helper;
 
 namespace VPark.Extensions
 {
@@ -13,6 +14,7 @@ namespace VPark.Extensions
            
             services.AddTransient<IBookingRepository, BookingRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IServiceFee, ServiceFee>();
             //services.AddScoped<IInterface, Implementation>();
         }
     }

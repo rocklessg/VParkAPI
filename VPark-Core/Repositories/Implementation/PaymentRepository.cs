@@ -20,11 +20,13 @@ namespace VPark_Core.Repositories.Implementation
     {
         private readonly AppDbContext _context;
         private readonly ILogger<PaymentRepository> _logger;
+        private readonly IServiceFee _serviceFee;
 
-        public PaymentRepository(AppDbContext context, ILogger<PaymentRepository> logger)
+        public PaymentRepository(AppDbContext context, ILogger<PaymentRepository> logger, IServiceFee serviceFee)
         {
             _context = context;
             _logger = logger;
+            _serviceFee = serviceFee;
         }
 
         public async Task<Response<PaymentDto>> AddPayment(PaymentDto paymentDto, string bookingId)
@@ -53,11 +55,13 @@ namespace VPark_Core.Repositories.Implementation
 
             if (getBooking.ServiceType.Equals(ServiceType.Hour))
             {
-                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(getBooking.ServiceType, getBooking.DurationOfStay);
+                servicePaymentAmount = _serviceFee.GetParkingSpaceFee(getBooking.ServiceType, getBooking.DurationOfStay);
+                //servicePaymentAmount = ServiceFee.GetParkingSpaceFee(getBooking.ServiceType, getBooking.DurationOfStay);
             }
             else
             {
-                servicePaymentAmount = ServiceFee.GetParkingSpaceFee(ServiceType.Day, getBooking.DurationOfStay);
+                servicePaymentAmount = _serviceFee.GetParkingSpaceFee(ServiceType.Day, getBooking.DurationOfStay);
+                //servicePaymentAmount = ServiceFee.GetParkingSpaceFee(ServiceType.Day, getBooking.DurationOfStay);
             }
 
             var payment = new Payment
