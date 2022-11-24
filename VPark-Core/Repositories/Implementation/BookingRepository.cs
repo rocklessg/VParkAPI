@@ -22,17 +22,18 @@ namespace VPark_Core.Repositories.Implementation
     {
         private readonly AppDbContext _context;
         private readonly ILogger<BookingRepository> _logger;
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BookingRepository(AppDbContext context, ILogger<BookingRepository> logger)
+        public BookingRepository(AppDbContext context, ILogger<BookingRepository> logger, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public async Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, CustomerDto customerDto)
+        public async Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, string email)
         {
-            var user = await _userManager.FindByEmailAsync(customerDto.Email);
+            var user = await _userManager.FindByEmailAsync(email);
             var parkingSpaceToBook = _context.ParkingSpaces.FirstOrDefault(x => x.Id == parkingSpaceId);
             if (parkingSpaceToBook == null || parkingSpaceToBook.IsBooked == true)
             {
@@ -46,14 +47,14 @@ namespace VPark_Core.Repositories.Implementation
             {
                 ServiceType = bookingRequestDto.ServiceType,
                 Date = DateTime.UtcNow.Date,
-                Duration = bookingRequestDto.Duration,
+                DurationOfStay = bookingRequestDto.Duration,
                 PaymentStatus = false,
                 Reference = generatedBookingReference,
                 ParkingSpaceId = parkingSpaceId,
-                CustomerId = user.Customer.AppUserId,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             };
+
 
             await _context.AddAsync(booking);
             await _context.SaveChangesAsync();

@@ -62,7 +62,7 @@ namespace VPark_Core.Repositories.Implementation
         public async Task<Response<IdentityResult>> Login(UserLoginDto login)
         {
             _logger.LogInformation(message: $"Attempt to login by User with Email: {login.Email}", login);
-            IdentityUser user =await _userManager.FindByEmailAsync(login.Email);
+            IdentityUser user = await _userManager.FindByEmailAsync(login.Email);
             _logger.LogInformation(message: $"Email Address : {login.Email} exists in the Database", login);
             if (user == null)
             {
