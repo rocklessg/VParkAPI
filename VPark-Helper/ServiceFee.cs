@@ -30,7 +30,11 @@ namespace VPark_Helper
             }
             else if (serviceType == ServiceType.Day)
             {
-                serviceFee = 7500m;
+                if (parkingDuration <= 0)
+                {
+                    return "Invalid Input";
+                }
+                serviceFee = 7500m * parkingDuration;
             }
 
             return serviceFee.ToString();

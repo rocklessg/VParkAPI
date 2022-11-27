@@ -24,5 +24,19 @@ namespace VPark.Controllers
             var response = await _bookingRepo.AddBookingAsync(bookingRequestDto, parkingSpaceId, email);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpGet("Get-AllBooking")]
+        public async Task<IActionResult> GetAllBookings()
+        {
+            var response = await _bookingRepo.GetAllBookings();
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("Get-BookingById")]
+        public async Task<IActionResult> GetBookingById(string bookingId)
+        {
+            var response = await _bookingRepo.GetBookingsById(bookingId);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }
