@@ -12,8 +12,8 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221110135208_IdentityInfoTable")]
-    partial class IdentityInfoTable
+    [Migration("20221121144234_RenewAllMigrations")]
+    partial class RenewAllMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -257,8 +257,8 @@ namespace VPark_Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("Duration")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("DurationOfStay")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using VPark_Models;
@@ -13,21 +14,24 @@ namespace VPark_Data
 {
     public class AppDbContext : IdentityDbContext
     {
-       
-
         public AppDbContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)           
+        {
+            
+            base.OnModelCreating(builder);
+            //builder.Entity<Booking>()
+            //.Property(x => x.Duration).HasColumnName("Duration").HasColumnType("int");
+        }
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //{
         //    //connect to postgres with connection string from app settings
 
         //    //options.UseNpgsql(Configuration.GetConnectionString("Default"));
         //}
-
-        
 
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Customer> Customers { get; set; }

@@ -25,7 +25,7 @@ namespace VPark_Core.Repositories.Implementation
         public AccountRepository(UserManager<IdentityUser> userManager, ILogger<AccountRepository> logger, IConfiguration configuration)
         {
             _userManager = userManager;
-            _logger = logger;           
+            _logger = logger;
             _configuration = configuration;
         }
 
@@ -36,7 +36,7 @@ namespace VPark_Core.Repositories.Implementation
             {
                 UserName = register.EmailAddress,
                 Email = register.EmailAddress,
-                PhoneNumber= register.PhoneNumber,  
+                PhoneNumber= register.PhoneNumber,
                 FirstName = register.FirstName,
                 LastName = register.LastName,
             };
@@ -45,6 +45,7 @@ namespace VPark_Core.Repositories.Implementation
 
             if (!result.Succeeded)
             {
+                _logger.LogError($"User registrationb failed {nameof(Register)}");
                 return new Response<IdentityResult>()
                 {
                     Succeeded = false,
@@ -56,16 +57,12 @@ namespace VPark_Core.Repositories.Implementation
                 Succeeded = true,
                 Message = "User Registered Successfully",
             };
-
-           
-           
         }
-        
 
         public async Task<Response<IdentityResult>> Login(UserLoginDto login)
         {
             _logger.LogInformation(message: $"Attempt to login by User with Email: {login.Email}", login);
-            IdentityUser user =await _userManager.FindByEmailAsync(login.Email);
+            IdentityUser user = await _userManager.FindByEmailAsync(login.Email);
             _logger.LogInformation(message: $"Email Address : {login.Email} exists in the Database", login);
             if (user == null)
             {
@@ -82,7 +79,7 @@ namespace VPark_Core.Repositories.Implementation
                 {
                     Succeeded = false,
                     Message = $"Invalid Password, Please re-enter your password correctly"
-                };            
+                };
             }
             var claims = new[]
             {
@@ -91,13 +88,10 @@ namespace VPark_Core.Repositories.Implementation
             };
 
             //Encrypt the token
-            // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEY"))); 
-            //var key = Environment.GetEnvironmentVariable("KEY");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEY")));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-               // audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(20),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
@@ -109,7 +103,6 @@ namespace VPark_Core.Repositories.Implementation
                 Succeeded = true,
                 Message = tokenAsString,
                 ExpireDate = token.ValidTo
-                
             };
 
         }
