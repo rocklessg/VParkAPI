@@ -21,7 +21,7 @@ namespace VPark_Data
 
         protected override void OnModelCreating(ModelBuilder builder)           
         {
-            builder.Entity<Booking>().Ignore(t => t.Duration);
+            
             base.OnModelCreating(builder);
             //builder.Entity<Booking>()
             //.Property(x => x.Duration).HasColumnName("Duration").HasColumnType("int");

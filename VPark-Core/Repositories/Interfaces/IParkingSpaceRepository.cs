@@ -16,4 +16,5 @@ namespace VPark_Core.Repositories.Interfaces
         Task<Response<string>> DeleteParkingSpace(string parkingSpaceId);
         Task<Response<ParkingSpaceDto>> EditParkingSpaceAsync(ParkingSpaceDto updateParkingSpace);
     }
+
 }
