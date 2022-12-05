@@ -82,7 +82,7 @@ namespace VPark_Core.Repositories.Implementation
 
         public async Task<Response<ParkingSpace>> GetParkingSpaceByIdAsync(string id)
         {
-            var parkingLot = await _context.ParkingSpaces.Where(x => x.Id == id).FirstOrDefaultAsync(); ;
+            var parkingLot = await _context.ParkingSpaces.Where(x => x.Id == id).FirstOrDefaultAsync();
             if (parkingLot != null)
             {
                 return new Response<ParkingSpace> { Succeeded = true, Message = "Get Parking Space Successful", Data = parkingLot, StatusCode = StatusCodes.Status200OK };
