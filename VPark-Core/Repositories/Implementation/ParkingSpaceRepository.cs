@@ -27,6 +27,7 @@ namespace VPark_Core.Repositories.Implementation
 
         public async Task<Response<ParkingSpaceDto>> AddParkingSpace(ParkingSpaceDto newParkingSpace)
         {
+           
             var parkingLot = new ParkingSpace
             {
                 Name = newParkingSpace.Name,
