@@ -9,6 +9,7 @@ using VPark.Extensions;
 using VPark_Core.Repositories.Implementation;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Data;
+using VPark_Helper;
 using VPark_Models.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ResolveJwt(builder.Configuration);
 builder.Services.ResolveSwaggerAuthorization();
+
+builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
 var app = builder.Build();
 

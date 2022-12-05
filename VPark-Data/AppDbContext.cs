@@ -19,19 +19,11 @@ namespace VPark_Data
 
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)           
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            
             base.OnModelCreating(builder);
-            //builder.Entity<Booking>()
-            //.Property(x => x.Duration).HasColumnName("Duration").HasColumnType("int");
-        }
-        //protected override void OnConfiguring(DbContextOptionsBuilder options)
-        //{
-        //    //connect to postgres with connection string from app settings
 
-        //    //options.UseNpgsql(Configuration.GetConnectionString("Default"));
-        //}
+        }
 
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Customer> Customers { get; set; }

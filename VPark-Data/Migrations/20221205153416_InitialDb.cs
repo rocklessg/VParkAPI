@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace VPark_Data.Migrations
 {
-    public partial class RenewAllMigrations : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -229,23 +229,24 @@ namespace VPark_Data.Migrations
                 name: "Payments",
                 columns: table => new
                 {
-                    BookingId = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     PaymentReference = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     PaymentMethod = table.Column<int>(type: "integer", nullable: false),
+                    BookingId = table.Column<string>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payments", x => x.BookingId);
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Payments_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -294,6 +295,12 @@ namespace VPark_Data.Migrations
                 name: "IX_Bookings_ParkingSpaceId",
                 table: "Bookings",
                 column: "ParkingSpaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_BookingId",
+                table: "Payments",
+                column: "BookingId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
