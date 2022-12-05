@@ -25,9 +25,9 @@ namespace VPark.Controllers
             var result = await _acctRepo.Register(register);
             if (!result.Succeeded)
             {
-               return BadRequest(result); 
+               return BadRequest(result);
             }
-            
+
             return Ok(result);
         }
 
