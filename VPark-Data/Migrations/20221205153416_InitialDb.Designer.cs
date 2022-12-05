@@ -12,8 +12,8 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221121144234_RenewAllMigrations")]
-    partial class RenewAllMigrations
+    [Migration("20221205153416_InitialDb")]
+    partial class InitialDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -309,13 +309,20 @@ namespace VPark_Data.Migrations
 
             modelBuilder.Entity("VPark_Models.Payment", b =>
                 {
-                    b.Property<string>("BookingId")
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("BookingId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PaymentMethod")
@@ -330,7 +337,10 @@ namespace VPark_Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("BookingId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -438,9 +448,7 @@ namespace VPark_Data.Migrations
                 {
                     b.HasOne("VPark_Models.Models.Booking", "Booking")
                         .WithOne("Payment")
-                        .HasForeignKey("VPark_Models.Payment", "BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VPark_Models.Payment", "BookingId");
 
                     b.Navigation("Booking");
                 });

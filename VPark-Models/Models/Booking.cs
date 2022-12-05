@@ -12,7 +12,7 @@ namespace VPark_Models.Models
     {
         public ServiceType ServiceType { get; set; }
         public string Reference { get; set; }
-        public DateTime Date { get; set; }        
+        public DateTime Date { get; set; }
         public int DurationOfStay { get; set; }
         [NotMapped]
         public int Duration { get; set; }
