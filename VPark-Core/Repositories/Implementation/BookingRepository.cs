@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
@@ -24,12 +25,14 @@ namespace VPark_Core.Repositories.Implementation
         private readonly AppDbContext _context;
         private readonly ILogger<BookingRepository> _logger;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public BookingRepository(AppDbContext context, ILogger<BookingRepository> logger, UserManager<IdentityUser> userManager)
+        public BookingRepository(AppDbContext context, ILogger<BookingRepository> logger, UserManager<IdentityUser> userManager, IMapper mapper)
         {
             _context = context;
             _logger = logger;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, string email)
@@ -43,33 +46,39 @@ namespace VPark_Core.Repositories.Implementation
             }
 
             var generatedBookingReference = HelperCodeGenerator.GenerateBookingReference("BKN");
-
-            var booking = new Booking
-            {
-                ServiceType = bookingRequestDto.ServiceType,
-                Date = DateTime.UtcNow.Date,
-                DurationOfStay = bookingRequestDto.Duration,
-                PaymentStatus = false,
-                Reference = generatedBookingReference,
-                ParkingSpaceId = parkingSpaceId,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow
-            };
-
+            Booking booking = _mapper.Map<Booking>(bookingRequestDto);
+            booking.Reference = generatedBookingReference;
 
             await _context.AddAsync(booking);
             await _context.SaveChangesAsync();
 
+            var BookingResponse = _mapper.Map<BookingResponseDto>(booking);
+
             _logger.LogInformation("Booking parking space in progress", nameof(booking));
             return new Response<BookingResponseDto> { Succeeded = false, Message = "Proceed to make payment" };
+
+            //var booking = new Booking
+            //{
+            //    ServiceType = bookingRequestDto.ServiceType,
+            //    Date = DateTime.UtcNow.Date,
+            //    DurationOfStay = bookingRequestDto.Duration,
+            //    PaymentStatus = false,
+            //    Reference = generatedBookingReference,
+            //    ParkingSpaceId = parkingSpaceId,
+            //    CreatedAt = DateTime.UtcNow,
+            //    ModifiedAt = DateTime.UtcNow
+            //};
+
+
+
         }
 
         public async Task<Response<IEnumerable<Booking>>> GetAllBookings()
         {
 
-            var allBookings = await _context.Bookings.OrderBy(x => x.ParkingSpace).ToListAsync();    
+            var allBookings = await _context.Bookings.OrderBy(x => x.ParkingSpace).ToListAsync();
             var response = new Response<IEnumerable<Booking>>(StatusCodes.Status200OK, true, "List of all Bookings", allBookings);
-            return response;          
+            return response;
         }
 
         public async Task<Response<Booking>> GetBookingsById(string bookingId)
