@@ -12,7 +12,6 @@ namespace VPark_Core.Repositories.Interfaces
     public interface IAccountRepository
     {
         Task<Response<IdentityResult>> Register(UserRegisterationDto register);
-        
         Task<Response<IdentityResult>> Login(UserLoginDto login);
     }
 }

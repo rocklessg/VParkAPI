@@ -22,7 +22,7 @@ namespace VPark.Controllers
         }
 
         [Authorize]
-        [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]        
+        [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]
         [HttpGet("All-ParkingSpace")]
         public async Task<IActionResult> GetAllParkingSpacesAsync()
         {

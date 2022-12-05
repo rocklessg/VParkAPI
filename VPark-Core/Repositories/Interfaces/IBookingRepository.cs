@@ -13,7 +13,7 @@ namespace VPark_Core.Repositories.Interfaces
     public interface IBookingRepository
     {
         Task<Response<IEnumerable<BookingResponseDto>>> GetBookingAsync(string customerId);
-        Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, CustomerDto customerDto);
+        Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, AppUser customerDto);
         //Task<Response<BookingResponseDto>> GetBookingByReferenceAsync(string bookingReference);
         //Task<Response<string>> DeleteBookingAsync(string parkingSpaceId);
         //Task<Response<BookingResponseDto>> EditBookingAsync(BookingRequestDto bookingRequestDto);

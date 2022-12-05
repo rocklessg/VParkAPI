@@ -30,7 +30,7 @@ namespace VPark_Core.Repositories.Implementation
             _logger = logger;
         }
 
-        public async Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, CustomerDto customerDto)
+        public async Task<Response<BookingResponseDto>> AddBookingAsync(BookingRequestDto bookingRequestDto, string parkingSpaceId, AppUser customerDto)
         {
             var user = await _userManager.FindByEmailAsync(customerDto.Email);
             var parkingSpaceToBook = _context.ParkingSpaces.FirstOrDefault(x => x.Id == parkingSpaceId);
@@ -50,7 +50,7 @@ namespace VPark_Core.Repositories.Implementation
                 PaymentStatus = false,
                 Reference = generatedBookingReference,
                 ParkingSpaceId = parkingSpaceId,
-                CustomerId = user.Customer.AppUserId,
+                CustomerId = user.Id,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
             };
