@@ -22,24 +22,23 @@ namespace VPark_Core.Repositories.Implementation
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountRepository> _logger;
         private readonly IConfiguration _configuration;
-        public AccountRepository(UserManager<IdentityUser> userManager, ILogger<AccountRepository> logger, IConfiguration configuration)
+        private readonly IMapper _mapper;
+
+        public AccountRepository(UserManager<IdentityUser> userManager, ILogger<AccountRepository> logger, IConfiguration configuration, IMapper mapper)
         {
             _userManager = userManager;
             _logger = logger;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<Response<IdentityResult>> Register(UserRegisterationDto register)
         {
             _logger.LogInformation(message: "Attempting to create a new user", register);
-            var user = new AppUser
-            {
-                UserName = register.EmailAddress,
-                Email = register.EmailAddress,
-                PhoneNumber= register.PhoneNumber,
-                FirstName = register.FirstName,
-                LastName = register.LastName,
-            };
+            var user = _mapper.Map<IdentityUser>(register);
+            user.UserName = register.EmailAddress;
+            user.Email = register.EmailAddress;
+
             var result = await _userManager.CreateAsync(user, register.Password);
             _logger.LogInformation(message: $"new user with UserName:{register.EmailAddress} created", register);
 
@@ -102,7 +101,7 @@ namespace VPark_Core.Repositories.Implementation
             {
                 Succeeded = true,
                 Message = tokenAsString,
-                ExpireDate = token.ValidTo
+                //ExpireDate = token.ValidTo
             };
 
         }

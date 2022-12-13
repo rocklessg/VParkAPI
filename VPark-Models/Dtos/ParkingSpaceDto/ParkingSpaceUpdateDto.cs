@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPark_Models.Dtos
+namespace VPark_Models.Dtos.ParkingSpaceDto
 {
-    public class ParkingSpaceDto
+    public class ParkingSpaceUpdateDto : ParkingSpaceRequestDto
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public bool Isbooked { get; set; }
     }
 }

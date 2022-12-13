@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using VPark_Core.Repositories.Interfaces;
-using VPark_Models.Dtos;
+using VPark_Models.Dtos.ParkingSpaceDto;
 using VPark_Models.Models;
 
 namespace VPark.Controllers
@@ -22,7 +22,7 @@ namespace VPark.Controllers
         }
 
         [Authorize]
-        [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]        
+        [SwaggerOperation(Summary = "Description: This endpoint gets all the parking space registered on the app")]
         [HttpGet("All-ParkingSpace")]
         public async Task<IActionResult> GetAllParkingSpacesAsync()
         {
@@ -38,14 +38,14 @@ namespace VPark.Controllers
         }
 
         [HttpPost("Add-ParkingSpace")]
-        public async Task<IActionResult> AddParkingSpace([FromBody] ParkingSpaceDto payload)
+        public async Task<IActionResult> AddParkingSpace([FromBody] ParkingSpaceRequestDto payload)
         {
             var response = await _parkingSpaceRepository.AddParkingSpace(payload);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditParkingSpaceAsync([FromBody] ParkingSpaceDto payload)
+        public async Task<IActionResult> EditParkingSpaceAsync([FromBody] ParkingSpaceUpdateDto payload)
         {
             var response = await _parkingSpaceRepository.EditParkingSpaceAsync(payload);
             return StatusCode(response.StatusCode, response);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Data;
 using VPark_Models.Dtos;
+using VPark_Models.Dtos.ParkingSpaceDto;
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -18,27 +20,29 @@ namespace VPark_Core.Repositories.Implementation
     {
         private readonly AppDbContext _context;
         private readonly ILogger<ParkingSpaceRepository> _logger;
+        private readonly IMapper _mapper;
 
-        public ParkingSpaceRepository(AppDbContext context, ILogger<ParkingSpaceRepository> logger)
+        public ParkingSpaceRepository(AppDbContext context, ILogger<ParkingSpaceRepository> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<Response<ParkingSpaceDto>> AddParkingSpace(ParkingSpaceDto newParkingSpace)
+        public async Task<Response<ParkingSpaceResponseDto>> AddParkingSpace(ParkingSpaceRequestDto newParkingSpace)
         {
-           
-            var parkingLot = new ParkingSpace
-            {
-                Name = newParkingSpace.Name,
-                IsBooked = newParkingSpace.Isbooked,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow
-            };
-            await _context.AddAsync(parkingLot);
+            ParkingSpace parkingSpace = _mapper.Map<ParkingSpace>(newParkingSpace);
+            //var parkingLot = new ParkingSpace
+            //{
+            //    Name = newParkingSpace.Name,
+            //    IsBooked = newParkingSpace.Isbooked,
+            //    CreatedAt = DateTime.UtcNow,
+            //    ModifiedAt = DateTime.UtcNow
+            //};
+            await _context.AddAsync(parkingSpace);
             await _context.SaveChangesAsync();
 
-            return new Response<ParkingSpaceDto> { Succeeded = true, Message = "Parking Space Added Successfully" };
+            return new Response<ParkingSpaceResponseDto> { Succeeded = true, Message = "Parking Space Added Successfully" };
         }
 
         public async Task<Response<string>> DeleteParkingSpace(string parkingSpaceId)
@@ -55,7 +59,7 @@ namespace VPark_Core.Repositories.Implementation
             return new Response<string>() { Succeeded = false, Message = "Parking space not found, please check the Id and try again" };
         }
 
-        public async Task<Response<ParkingSpaceDto>> EditParkingSpaceAsync(ParkingSpaceDto updateParkingSpace)
+        public async Task<Response<ParkingSpaceResponseDto>> EditParkingSpaceAsync(ParkingSpaceUpdateDto updateParkingSpace)
         {
             var parkingLot = await _context.ParkingSpaces.Where(x => x.Id == updateParkingSpace.Id).FirstOrDefaultAsync();
             if (parkingLot != null)
@@ -67,10 +71,10 @@ namespace VPark_Core.Repositories.Implementation
                 _context.Update(parkingLot);
                 await _context.SaveChangesAsync();
 
-                return new Response<ParkingSpaceDto> { Succeeded = true, Message = "Parking space updated successfully" };
+                return new Response<ParkingSpaceResponseDto> { Succeeded = true, Message = "Parking space updated successfully" };
             }
             _logger.LogError(message: "Error in updating parking space", parkingLot);
-            return new Response<ParkingSpaceDto> { Succeeded = false, Message = "Unexpected error. Please try again later" };
+            return new Response<ParkingSpaceResponseDto> { Succeeded = false, Message = "Unexpected error. Please try again later" };
         }
 
         public async Task<Response<IEnumerable<ParkingSpace>>> GetAllParkingSpacesAsync()
@@ -82,7 +86,7 @@ namespace VPark_Core.Repositories.Implementation
 
         public async Task<Response<ParkingSpace>> GetParkingSpaceByIdAsync(string id)
         {
-            var parkingLot = await _context.ParkingSpaces.Where(x => x.Id == id).FirstOrDefaultAsync(); ;
+            var parkingLot = await _context.ParkingSpaces.Where(x => x.Id == id).FirstOrDefaultAsync();
             if (parkingLot != null)
             {
                 return new Response<ParkingSpace> { Succeeded = true, Message = "Get Parking Space Successful", Data = parkingLot, StatusCode = StatusCodes.Status200OK };
