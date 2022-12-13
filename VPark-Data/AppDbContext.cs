@@ -37,5 +37,7 @@ namespace VPark_Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<CardDetails> CardDetails { get; set; }
+
     }
 }
