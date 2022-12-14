@@ -180,7 +180,7 @@ namespace VPark_Core.Repositories.Implementation
             var recordToDelete = await _context.CardDetails.FirstOrDefaultAsync(x => x.Id == cardId);
             if (recordToDelete != null)
             {
-                _logger.LogInformation($"{nameof(RemoveCard)} SUCCESSFULLY RETRIEVED CARD FROM THE DATABASE AT: {DateTime.Now}");
+                _logger.LogInformation($"{nameof(RemoveCard)} CARD TO BE DELETED SUCCESSFULLY RETRIEVED CARD FROM THE DATABASE AT: {DateTime.Now}");
                 _context.CardDetails.Remove(recordToDelete);
                 _logger.LogInformation($"{nameof(RemoveCard)} SUCCESSFULLY REMOVED CARD FROM THE DATABASE AT: {DateTime.Now}");
                 var result = await _context.SaveChangesAsync();
