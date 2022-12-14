@@ -12,8 +12,8 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221205153416_InitialDb")]
-    partial class InitialDb
+    [Migration("20221214085427_FKToCardDetails")]
+    partial class FKToCardDetails
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -284,6 +284,52 @@ namespace VPark_Data.Migrations
                     b.ToTable("Bookings");
                 });
 
+            modelBuilder.Entity("VPark_Models.Models.CardDetails", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CVV")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)");
+
+                    b.Property<string>("CardOwnerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("CardType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExpirationDate")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("appUserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("appUserId");
+
+                    b.ToTable("CardDetails");
+                });
+
             modelBuilder.Entity("VPark_Models.Models.ParkingSpace", b =>
                 {
                     b.Property<string>("Id")
@@ -444,6 +490,15 @@ namespace VPark_Data.Migrations
                     b.Navigation("ParkingSpace");
                 });
 
+            modelBuilder.Entity("VPark_Models.Models.CardDetails", b =>
+                {
+                    b.HasOne("VPark_Models.Models.AppUser", "AppUser")
+                        .WithMany("CardsDetails")
+                        .HasForeignKey("appUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("VPark_Models.Payment", b =>
                 {
                     b.HasOne("VPark_Models.Models.Booking", "Booking")
@@ -465,6 +520,8 @@ namespace VPark_Data.Migrations
 
             modelBuilder.Entity("VPark_Models.Models.AppUser", b =>
                 {
+                    b.Navigation("CardsDetails");
+
                     b.Navigation("Customer");
                 });
 #pragma warning restore 612, 618
