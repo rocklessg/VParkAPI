@@ -11,7 +11,7 @@ namespace VPark_Models.Models
     public class Booking : BaseEntity
     {
         public ServiceType ServiceType { get; set; }
-        public string Reference { get; set; }
+        public string Reference { get; set; } 
         public DateTime Date { get; set; }
         public int DurationOfStay { get; set; }
         [NotMapped]

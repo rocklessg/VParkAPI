@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace VPark_Models.Models
 {
-    public class CardDetails
-    {
-        [Key]
-        public int Id { get; set; }
+    public class CardDetails :BaseEntity
+    {      
         [Required]
         [StringLength(100)]              
         public string CardOwnerName { get; set; }
@@ -24,8 +23,12 @@ namespace VPark_Models.Models
         [Required]
         [StringLength(3)]  
         public string CVV { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ModifiedAt { get; set; }
+
+        //Nav properties
+        public string appUserId { get; set; }
+        [ForeignKey(nameof(appUserId))]
+        public AppUser AppUser { get; set; }
+
     }
 }
 
