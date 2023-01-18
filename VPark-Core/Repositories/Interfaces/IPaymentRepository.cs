@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using VPark_Models;
 using VPark_Models.Dtos;
+using VPark_Models.Dtos.PaymentDto;
 
 namespace VPark_Core.Repositories.Interfaces
 {
     public interface IPaymentRepository
     {
-        Task<Response<PaymentDto>> AddPayment(PaymentDto payment, string bookingId);
+        Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto payment, string bookingId);
     }
 }
