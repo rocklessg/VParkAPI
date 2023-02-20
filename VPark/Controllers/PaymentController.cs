@@ -31,7 +31,7 @@ namespace VPark.Controllers
         }
 
         [HttpPost("Add-Card")]
-        public async Task<IActionResult> AddCard(CardDetailsDto cards, string appUserId)
+        public async Task<IActionResult> AddCard(AuthorizeCardDto cards, string appUserId)
         {
             var response = await _paymentRepository.AddCard(cards, appUserId);  
             return Ok(response);

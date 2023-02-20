@@ -22,7 +22,7 @@ namespace VPark_Helper
             CreateMap<Booking, BookingResponseDto>().ReverseMap();
 
             CreateMap<ParkingSpace, ParkingSpaceRequestDto>().ReverseMap();
-            CreateMap<CardDetails, CardDetailsDto>().ReverseMap();
+            CreateMap<CardDetails, AuthorizeCardDto>().ReverseMap();
         }
     }
 }

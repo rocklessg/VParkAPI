@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using PayStack.Net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,15 +30,23 @@ namespace VPark_Core.Repositories.Implementation
         private readonly IServiceFee _serviceFee;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly string token;
+        private PayStackApi _payStack { get; set; }
+       
 
         public PaymentRepository(AppDbContext context,
-            ILogger<PaymentRepository> logger, IServiceFee serviceFee, UserManager<IdentityUser> userManager, IMapper mapper)
+            ILogger<PaymentRepository> logger, IServiceFee serviceFee, UserManager<IdentityUser> userManager, IMapper mapper, IConfiguration config)
         {
             _context = context;
             _logger = logger;
             _serviceFee = serviceFee;
             _userManager = userManager;
             _mapper = mapper;
+            _config = config;
+            token = _config["Payment: PayStackSK"];
+            _payStack = new PayStackApi(token);
+            
         }
 
 
@@ -128,13 +139,13 @@ namespace VPark_Core.Repositories.Implementation
 
 
         }
-        public async Task<Response<CardDetailsDto>> AddCard(CardDetailsDto cards, string appUserId)
+        public async Task<Response<CardAuthorizeResponseDto>> AddCard(AuthorizeCardDto cards, string appUserId)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
             if (user == null)
             {
                 _logger.LogError($"{nameof(AddCard)} USER WITH id: {appUserId} NOT FOUND IN THE DATABASE AT: {DateTime.Now}");
-                return new Response<CardDetailsDto> { Succeeded = false, Message = "Invalid User", StatusCode = StatusCodes.Status400BadRequest };
+                return new Response<CardAuthorizeResponseDto> { Succeeded = false, Message = "Invalid User", StatusCode = StatusCodes.Status400BadRequest };
             }
             else
             {
@@ -143,7 +154,7 @@ namespace VPark_Core.Repositories.Implementation
                 await _context.AddAsync(cardDetails);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"{nameof(AddCard)} USER CARD DETAILS SUCCESSFULLY SAVED TO DATABASE AT: {DateTime.Now}");
-                return new Response<CardDetailsDto> { Succeeded = true, Message = "Card details successfully Added" };
+                return new Response<CardAuthorizeResponseDto> { Succeeded = true, Message = "Card details successfully Added" };
             }
         }
         public async Task<Response<IEnumerable<CardDetails>>> GetAllCardsAsync()
@@ -217,6 +228,37 @@ namespace VPark_Core.Repositories.Implementation
             }
         }
 
+        public async Task<Response<string>> CreateCardAuthorization(AuthorizeCardDto cardDetails)
+        {
+            var request = new CardChargeRequest
+            {
+                Email = cardDetails.Email,
+                Amount = cardDetails.Amount,
+                Card = new()
+                {
+                    Cvv = cardDetails.Cvv,
+                    ExpiryMonth = cardDetails.CardExpiryMonth,
+                    ExpiryYear = cardDetails.CardExpiryYear,
+                    Number = cardDetails.CardNumber,
+                },
+                Pin = cardDetails.Pin,
+            };
+
+            ChargeResponse response = _payStack.Charge.ChargeCard(request);
+            if (!response.Status)
+            {
+                return new Response<string> { Succeeded = false, Message = "charging card attempt was unsuccessful" };
+            }
+
+            var authorizationCode = response.Data.Authorization.AuthorizationCode;
+            if (authorizationCode == null)
+            {
+                return new Response<string> { Succeeded = false, Message = "authroization code not found", Data = null };
+            }
+
+            return new Response<string> { Succeeded = true, Message = "authorization code obtained", Data = authorizationCode };
+
+        }
     }
 }
 
