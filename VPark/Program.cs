@@ -36,6 +36,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
 })
 .AddEntityFrameworkStores<AppDbContext>();
 
+
 builder.Services.ResolveDependencyInjectionServices();
 builder.Services.AddControllers();
 
@@ -43,6 +44,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ResolveJwt(builder.Configuration);
+builder.Services.ResolvePayStack(builder.Configuration);
+builder.Services.AddHttpClient();
+
 builder.Services.ResolveSwaggerAuthorization();
 
 builder.Services.AddAutoMapper(typeof(MapperInitializer));

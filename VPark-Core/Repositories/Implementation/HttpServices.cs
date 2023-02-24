@@ -1,19 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using VPark_Core.Repositories.Interfaces;
+using VPark_Helper.Request;
 
-namespace VPark_Helper
-{    
-    public class HttpService: IHttpService
+namespace VPark_Core.Repositories.Implementation
+{
+    public class HttpServices : IHttpServices
     {
         private readonly IHttpClientFactory _httpClient;
-        public HttpService(IHttpClientFactory httpClient)
+        private readonly ILogger<HttpServices> _logger;
+
+        public HttpServices(IHttpClientFactory httpClient, ILogger<HttpServices> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<T> SendPostRequest<T, U>(JsonContentPostRequest<U> request)
@@ -39,11 +44,14 @@ namespace VPark_Helper
 
             HttpResponseMessage response = await client.SendAsync(message);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var cardChargeResponse = JsonConvert.DeserializeObject<T>(responseContent);
+            
+            _logger.LogError("Paystack API returned a BadRequest response. Response body: {0}", responseContent);
+            var linkResponse = JsonConvert.DeserializeObject<T>(responseContent);
 
-            return cardChargeResponse;
+            return linkResponse;
 
         }
+
         public async Task<T> SendGetRequest<T>(GetRequest request)
         {
             var client = _httpClient.CreateClient();
@@ -63,17 +71,12 @@ namespace VPark_Helper
             HttpResponseMessage response = await client.SendAsync(message);
             var responseContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseContent);
-            var cardChargeResponse = JsonConvert.DeserializeObject<T>(responseContent);
+            var linkResponse = JsonConvert.DeserializeObject<T>(responseContent);
 
-            return cardChargeResponse;
+            return linkResponse;
 
         }
 
     }
 
-    public interface IHttpService
-    {
-        Task<T> SendPostRequest<T, U>(JsonContentPostRequest<U> request);
-        Task<T> SendGetRequest<T>(GetRequest request);
-    }
 }

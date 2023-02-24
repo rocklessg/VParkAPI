@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using PayStack.Net;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Data;
 using VPark_Helper;
+using VPark_Helper.Request;
 using VPark_Models;
 using VPark_Models.Dtos;
-using VPark_Models.Dtos.BookingDtos;
 using VPark_Models.Dtos.CardDetailsDtos;
+using VPark_Models.Dtos.PaystackDto;
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -32,11 +25,15 @@ namespace VPark_Core.Repositories.Implementation
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly string token;
-        private PayStackApi _payStack { get; set; }
-       
+        private readonly IHttpServices _httpService;
+        private readonly IPaystackRepository _paystackRepository;
+
+
+        private PayStackApi PayStack { get; set; }
+
 
         public PaymentRepository(AppDbContext context,
-            ILogger<PaymentRepository> logger, IServiceFee serviceFee, UserManager<IdentityUser> userManager, IMapper mapper, IConfiguration config)
+            ILogger<PaymentRepository> logger, IServiceFee serviceFee, UserManager<IdentityUser> userManager, IMapper mapper, IConfiguration config, IHttpServices httpService, IPaystackRepository paystackRepository)
         {
             _context = context;
             _logger = logger;
@@ -44,9 +41,10 @@ namespace VPark_Core.Repositories.Implementation
             _userManager = userManager;
             _mapper = mapper;
             _config = config;
-            token = _config["Payment: PayStackSK"];
-            _payStack = new PayStackApi(token);
-            
+            token = _config["Paystack: SecretKey"];
+            PayStack = new PayStackApi(token);
+            _httpService = httpService;
+            _paystackRepository = paystackRepository;
         }
 
 
@@ -115,7 +113,7 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
-                    return new Response<PaymentDto> { Succeeded = false, Message = "Invalid ParkingSpaceId", StatusCode = StatusCodes.Status404NotFound };
+                    return new Response<PaymentDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
                 }
 
                 payment.Status = Status.Success;
@@ -145,7 +143,7 @@ namespace VPark_Core.Repositories.Implementation
             if (user == null)
             {
                 _logger.LogError($"{nameof(AddCard)} USER WITH id: {appUserId} NOT FOUND IN THE DATABASE AT: {DateTime.Now}");
-                return new Response<CardAuthorizeResponseDto> { Succeeded = false, Message = "Invalid User", StatusCode = StatusCodes.Status400BadRequest };
+                return new Response<CardAuthorizeResponseDto> { Succeeded = false, Message = "Invalid User" };
             }
             else
             {
@@ -167,7 +165,7 @@ namespace VPark_Core.Repositories.Implementation
                 Succeeded = true,
                 Message = "List of all Cards",
                 Data = getAllcards,
-                StatusCode = StatusCodes.Status200OK
+
             };
         }
         public async Task<Response<CardDetails>> GetCardByUserId(string cardId)
@@ -203,7 +201,7 @@ namespace VPark_Core.Repositories.Implementation
                     {
                         Message = $"Successfully removed card",
                         Succeeded = true,
-                        StatusCode = StatusCodes.Status200OK
+
                     };
                 }
                 else
@@ -223,42 +221,132 @@ namespace VPark_Core.Repositories.Implementation
                 {
                     Message = $"Record Not found",
                     Succeeded = false,
-                    StatusCode = StatusCodes.Status404NotFound
+
                 };
             }
         }
 
-        public async Task<Response<string>> CreateCardAuthorization(AuthorizeCardDto cardDetails)
+        public async Task<PaystackResponseDto> InitializePaystackTransaction(PaystackRequestDto paystackReqDto, string bookingId)
         {
-            var request = new CardChargeRequest
+            var paymentMethodAcronym = HelperCodeGenerator.GenerateTransactionReference(PaymentMethodNameAcronym.CP.ToString());
+            PaystackResponseDto payRes = new();
+            payRes.PaymentReference = paymentMethodAcronym;
+            var request = new JsonContentPostRequest<PaystackRequestDto>();
+            paystackReqDto.amount = paystackReqDto.amount + ".00";
+            request.Data = paystackReqDto;
+            request.Url = "https://api.paystack.co/transaction/initialize";
+            request.AccessToken = _config["Paystack:SecretKey"];
+
+            var response = await _httpService.SendPostRequest<PaystackResponseDto, PaystackRequestDto>(request);
+            if (response.Status == "true")
             {
-                Email = cardDetails.Email,
-                Amount = cardDetails.Amount,
-                Card = new()
-                {
-                    Cvv = cardDetails.Cvv,
-                    ExpiryMonth = cardDetails.CardExpiryMonth,
-                    ExpiryYear = cardDetails.CardExpiryYear,
-                    Number = cardDetails.CardNumber,
-                },
-                Pin = cardDetails.Pin,
+                await _paystackRepository.CreatePaymentAsync(response.Data.Reference, payRes.PaymentReference, paystackReqDto.amount, bookingId);
+            }
+            if (response.Data.AccessCode == null)
+            {
+                return new PaystackResponseDto { Status = "false", Message = "Access code not found", Data = null };
+            }
+
+            var authorizationCode = response.Data.AccessCode;
+            var authorizationUrl = response.Data.AuthorizationUrl;
+            // Save the authorization code to the database
+            var authCodeToDb = new CardAuthorization { AuthorizationCode = authorizationCode, Email = paystackReqDto.email, AuthorizationUrl = authorizationUrl, CreatedAt = DateTime.UtcNow, ModifiedAt = DateTime.UtcNow };
+            _context.CardAuthorizations.Add(authCodeToDb);
+            await _context.SaveChangesAsync();
+
+            return response;
+        }
+
+        public async Task<Response<string>> VerifyPaymentReference(string paymentReference)
+        {
+            var paymentVerification = await _paystackRepository.GetPaymentByReferenceAsync(paymentReference);
+            if (paymentVerification == null)
+            {
+                return new Response<string> { Succeeded = false, Message = "payment reference not found!, please try again" };
             };
 
-            ChargeResponse response = _payStack.Charge.ChargeCard(request);
-            if (!response.Status)
+            if (paymentVerification.Status == Status.Success)
             {
-                return new Response<string> { Succeeded = false, Message = "charging card attempt was unsuccessful" };
-            }
-
-            var authorizationCode = response.Data.Authorization.AuthorizationCode;
-            if (authorizationCode == null)
+                return new Response<string> { Succeeded = false, Message = "payment is not successful at the moment, you may check back later" };
+            };
+            var request = new GetRequest();
+            request.Url = $"https://api.paystack.co/transaction/verify/{paymentReference}";
+            request.AccessToken = _config["Paystack:SecretKey"];
+            var response = await _httpService.SendGetRequest<PaystackVerifyPaymentDto>(request);
+            if (response.Status == "true")
             {
-                return new Response<string> { Succeeded = false, Message = "authroization code not found", Data = null };
+                if (response.Data.Status == "success")
+                {
+                    paymentVerification.Status = Status.Success;
+                    paymentVerification.ModifiedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                    return new Response<string> { Succeeded = true, Message = "payment status have been updated to SUCCESS in the DB" };
+                }
+                else
+                {
+                    return new Response<string> { Succeeded = false, Message = "Something went wrong, Failed to update the payment status to SUCCESS in DB" };
+                }
             }
-
-            return new Response<string> { Succeeded = true, Message = "authorization code obtained", Data = authorizationCode };
-
+            return new Response<string> { Succeeded = false, Message = $"Paystack could not verify Payment with ref: {paymentReference}" };
         }
+
+        //public async Task<ChargeResponseDto> ChargeSavedCard(ChargeCardRequestDto chargeCardReq, string bookingId)
+        //{
+        //    if (string.IsNullOrEmpty(chargeCardReq.Email) || string.IsNullOrEmpty(Convert.ToString(chargeCardReq.Amount)))
+        //    {
+        //        return new ChargeResponseDto { Status = "false", Message = "email and amount field cannot be empty" };
+        //    }
+        //    var authorizationCode = await _context.CardAuthorizations
+        //                                                    .Where(a => a.Email == chargeCardReq.Email)
+        //                                                    .Select(a => a.AuthorizationCode)
+        //                                                    .FirstOrDefaultAsync();
+        //    if (string.IsNullOrEmpty(authorizationCode))
+        //    {
+        //        return new ChargeResponseDto { Status = "false", Message = "authorization code not found" };
+        //    }
+
+        //    var paymentMethodAcronym = HelperCodeGenerator.GenerateTransactionReference(PaymentMethodNameAcronym.CP.ToString());
+        //    var request = new JsonContentPostRequest<ChargeCardRequestDto>();
+        //    chargeCardReq.Amount = chargeCardReq.Amount + ".00";
+        //    request.Data = chargeCardReq;
+        //    request.Url = "https://api.paystack.co/transaction/charge_authorization";
+        //    request.AccessToken = _config["Paystack:SecretKey"];
+        //    var response = await _httpService.SendPostRequest<ChargeResponseDto, ChargeCardRequestDto>(request);
+        //    if (response.Status == "true")
+        //    {
+        //        await _paystackRepository.CreatePaymentAsync(response.Data.Reference, chargeCardReq.PaymentReference, chargeCardReq.Amount, bookingId);
+        //    }
+
+
+
+
+        //    //var request = new AuthorizationCodeChargeRequest
+        //    //{
+        //    //    Email = email,
+        //    //    Amount = amount,
+        //    //    AuthorizationCode = authorizationCode,
+        //    //    Reference = paymentMethodAcronym,
+        //    //};
+
+        //    //ChargeResponse response = PayStack.Charge.ChargeAuthorizationCode(request);
+        //    //if (!response.Status)
+        //    //{
+        //    //    return new Response<PaymentResponse> { Succeeded = false, Message = "Charging saved card failed", Data = null };
+        //    //}
+        //    //var authorization = response.Data.Authorization;
+        //    //if (authorization != null || !authorization.Reusable)
+        //    //{
+        //    //    return new Response<PaymentResponse> { Succeeded = false, Message = "authorization not found or not reusable, Payment Failed", Data = null };
+        //    //}
+
+        //    //var payment = new Payment()
+        //    //{
+        //    //    Amount = Convert.ToDecimal(amount),
+        //    //    PaymentReference = request.Reference,
+        //    //};
+        //    //await _context.Payments.AddAsync(payment);
+        //    //await _context.SaveChangesAsync();
+        //    //return new Response<PaymentResponse> { Succeeded = true, Message = "Payment successful", Data = null };
+        //}
     }
 }
-

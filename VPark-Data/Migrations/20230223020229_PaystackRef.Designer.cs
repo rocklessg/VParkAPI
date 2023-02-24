@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VPark_Data;
@@ -11,9 +12,10 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230223020229_PaystackRef")]
+    partial class PaystackRef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,9 +291,6 @@ namespace VPark_Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AuthorizationCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AuthorizationUrl")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")

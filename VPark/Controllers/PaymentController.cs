@@ -4,6 +4,7 @@ using VPark_Core.Repositories.Interfaces;
 using VPark_Helper;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.CardDetailsDtos;
+using VPark_Models.Dtos.PaystackDto;
 using VPark_Models.Models;
 
 namespace VPark.Controllers
@@ -14,12 +15,14 @@ namespace VPark.Controllers
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IServiceFee _serviceFee;
+        private readonly IConfiguration _config;
 
-        public PaymentController(IPaymentRepository paymentRepository, ILogger<PaymentController> logger, 
-            IServiceFee serviceFee)
+        public PaymentController(IPaymentRepository paymentRepository, ILogger<PaymentController> logger,
+            IServiceFee serviceFee, IConfiguration config)
         {
             _paymentRepository = paymentRepository;
             _serviceFee = serviceFee;
+            _config = config;
         }
 
         [HttpPost("Add-Payment")]
@@ -58,5 +61,31 @@ namespace VPark.Controllers
             var response = await _paymentRepository.RemoveCard(cardId);
             return Ok(response);    
         }
+
+       
+
+        //[HttpPost("Charge-Savedcard")]
+        //public async Task<IActionResult> ChargeSavedCard(string email, string amount)
+        //{
+        //    var response = await _paymentRepository.ChargeSavedCard(email, amount);
+        //    return Ok(response);
+        //}
+       
+
+        [HttpPost("Paystack-initializepayment")]
+        public async Task<IActionResult> InitializePaystackPayment(PaystackRequestDto paystackReqDto, string bookingId)
+        {
+            var response = await _paymentRepository.InitializePaystackTransaction(paystackReqDto, bookingId);
+            return Ok(response);
+        }
+
+        [HttpGet("Verify-payment")]
+        public async Task<IActionResult> VerifyPaystackPayment(string reference)
+        {
+            var response = await _paymentRepository.VerifyPaymentReference(reference);
+            return Ok(response);
+        }
+
+
     }
 }
