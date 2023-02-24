@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace VPark_Data.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class AllTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,6 +53,24 @@ namespace VPark_Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardDetails",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    CardOwnerName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CardNumber = table.Column<string>(type: "character varying(19)", maxLength: 19, nullable: false),
+                    ExpirationDate = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
+                    CardType = table.Column<string>(type: "text", nullable: false),
+                    CVV = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardDetails", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,6 +337,9 @@ namespace VPark_Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CardDetails");
 
             migrationBuilder.DropTable(
                 name: "Payments");

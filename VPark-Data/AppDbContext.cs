@@ -18,16 +18,21 @@ namespace VPark_Data
         {
 
         }
-
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
-
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<CardDetails>()
+                .Property(p => p.CardType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (CardType)Enum.Parse(typeof(CardType), v));
         }
 
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<CardDetails> CardDetails { get; set; }
+
     }
 }
