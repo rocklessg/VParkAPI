@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.AccountDto;
+using VPark_Models.Dtos.UserDtos;
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -32,12 +33,13 @@ namespace VPark_Core.Repositories.Implementation
             _mapper = mapper;
         }
 
-        public async Task<Response<IdentityResult>> Register(UserRegisterationDto register)
+        public async Task<Response<UserDto>> Register(UserRegisterationDto register)
         {
             _logger.LogInformation(message: "Attempting to create a new user", register);
-            var user = _mapper.Map<IdentityUser>(register);
+            var user = _mapper.Map<AppUser>(register);
             user.UserName = register.EmailAddress;
             user.Email = register.EmailAddress;
+            
 
             var result = await _userManager.CreateAsync(user, register.Password);
             _logger.LogInformation(message: $"new user with UserName:{register.EmailAddress} created", register);
@@ -45,13 +47,13 @@ namespace VPark_Core.Repositories.Implementation
             if (!result.Succeeded)
             {
                 _logger.LogError($"User registrationb failed {nameof(Register)}");
-                return new Response<IdentityResult>()
+                return new Response<UserDto>()
                 {
                     Succeeded = false,
                     Message = "Registeration Failed, please retry"
                 };
             }
-            return new Response<IdentityResult>()
+            return new Response<UserDto>()
             {
                 Succeeded = true,
                 Message = "User Registered Successfully",
