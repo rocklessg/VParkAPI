@@ -15,6 +15,6 @@ namespace VPark_Models.Dtos.BookingDtos
         //public bool PaymentStatus { get; set; } = false;
       // public Payment Payment { get; set; }
        // public string CustomerId { get; set; }
-        public string ParkingSpaceId { get; set; }
+       // public string ParkingSpaceId { get; set; }
     }
 }

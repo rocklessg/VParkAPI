@@ -15,7 +15,9 @@ using VPark_Helper;
 using VPark_Models;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.BookingDtos;
+using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos.CardDetailsDtos;
+
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -38,17 +40,19 @@ namespace VPark_Core.Repositories.Implementation
             _mapper = mapper;
         }
 
+        public async Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto paymentDto, string bookingId)
+
 
         public async Task<Response<PaymentDto>> AddPayment(PaymentDto paymentDto, string bookingId)
         {
             if (bookingId == null)
             {
                 _logger.LogError("Invalid bookingId", nameof(AddPayment));
-                return new Response<PaymentDto> { Succeeded = false, Message = "Booking not found" };
+                return new Response<PaymentResponseDto> { Succeeded = false, Message = "Booking not found" };
             }
 
             var getBooking = _context.Bookings.FirstOrDefault(x => x.Id == bookingId);
-            if (getBooking == null) { return new Response<PaymentDto> { Succeeded = false, Message = "booking not found" }; }
+            if (getBooking == null) { return new Response<PaymentResponseDto> { Succeeded = false, Message = "booking not found" }; }
 
             string paymentMethodAcronym = string.Empty;
 
@@ -104,7 +108,7 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
-                    return new Response<PaymentDto> { Succeeded = false, Message = "Invalid ParkingSpaceId", StatusCode = StatusCodes.Status404NotFound };
+                    return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId", StatusCode = StatusCodes.Status404NotFound };
                 }
 
                 payment.Status = Status.Success;
@@ -121,10 +125,10 @@ namespace VPark_Core.Repositories.Implementation
 
                 await _context.SaveChangesAsync();
 
-                return new Response<PaymentDto> { Succeeded = true, Message = "Payment Successful", Data = paymentDto, StatusCode = 00 };
+                return new Response<PaymentResponseDto> { Succeeded = true, Message = "Payment Successful", Data = paymentDto, StatusCode = 00 };
             }
 
-            return new Response<PaymentDto> { Succeeded = false, Message = "Please try Card payment", Data = paymentDto, StatusCode = 99 };
+            return new Response<PaymentResponseDto> { Succeeded = false, Message = "Please try Card payment", Data = paymentDto, StatusCode = 99 };
 
 
         }
@@ -216,7 +220,6 @@ namespace VPark_Core.Repositories.Implementation
                 };
             }
         }
-
     }
 }
 
