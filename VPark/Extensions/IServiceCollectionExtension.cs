@@ -32,7 +32,8 @@ namespace VPark.Extensions
         public static void ResolveJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt");
-            var key = Environment.GetEnvironmentVariable("KEY");
+            //var key = Environment.GetEnvironmentVariable("KEY");
+            var key = jwtSettings.GetSection("Key").Value;
 
             _ = services.AddAuthentication(o =>
             {

@@ -54,16 +54,17 @@ namespace VPark_Core.Repositories.Implementation
             var result = await _context.Payments.FirstOrDefaultAsync(x => x.PaystackRef == paymentRef);
             return result;
         }
+
         public async Task<Response<PaymentDto>> AddPayment(PaymentDto paymentDto, string bookingId)
         {
             if (bookingId == null)
             {
                 _logger.LogError("Invalid bookingId", nameof(AddPayment));
-                return new Response<PaymentDto> { Succeeded = false, Message = "Booking not found" };
+                return new Response<PaymentResponseDto> { Succeeded = false, Message = "Booking not found" };
             }
 
             var getBooking = _context.Bookings.FirstOrDefault(x => x.Id == bookingId);
-            if (getBooking == null) { return new Response<PaymentDto> { Succeeded = false, Message = "booking not found" }; }
+            if (getBooking == null) { return new Response<PaymentResponseDto> { Succeeded = false, Message = "booking not found" }; }
 
             string paymentMethodAcronym = string.Empty;
 
@@ -136,10 +137,10 @@ namespace VPark_Core.Repositories.Implementation
 
                 await _context.SaveChangesAsync();
 
-                return new Response<PaymentDto> { Succeeded = true, Message = "Payment Successful", Data = paymentDto, StatusCode = 00 };
+                return new Response<PaymentResponseDto> { Succeeded = true, Message = "Payment Successful", Data = paymentDto, StatusCode = 00 };
             }
 
-            return new Response<PaymentDto> { Succeeded = false, Message = "Please try Card payment", Data = paymentDto, StatusCode = 99 };
+            return new Response<PaymentResponseDto> { Succeeded = false, Message = "Please try Card payment", Data = paymentDto, StatusCode = 99 };
 
 
         }

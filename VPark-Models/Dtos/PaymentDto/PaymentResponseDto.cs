@@ -6,14 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using VPark_Models.Models;
 
-namespace VPark_Models.Dtos
+namespace VPark_Models.Dtos.PaymentDto
 {
-    public class PaymentDto
+    public class PaymentResponseDto : PaymentRequestDto
     {
         public string PaymentReference { get; set; }
-        public decimal Amount { get; set; }
         public Status Status { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string BookingId { get; set; }

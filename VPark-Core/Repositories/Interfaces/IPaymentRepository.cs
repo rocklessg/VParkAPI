@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VPark_Models;
 using VPark_Models.Dtos;
+using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Dtos.PaystackDto;
 using VPark_Models.Models;

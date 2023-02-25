@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Helper;
+using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Dtos.PaystackDto;
@@ -28,7 +29,7 @@ namespace VPark.Controllers
         }
 
         [HttpPost("Add-Payment")]
-        public async Task<IActionResult> AddPayment(PaymentDto paymentDto, string bookingId)
+        public async Task<IActionResult> AddPayment(PaymentResponseDto paymentDto, string bookingId)
         {
             var response = await _paymentRepository.AddPayment(paymentDto, bookingId);
             return Ok(response);

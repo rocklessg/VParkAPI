@@ -89,13 +89,17 @@ namespace VPark_Core.Repositories.Implementation
             };
 
             //Encrypt the token
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEY")));
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("KEY")));
+            var jwtSettings = _configuration.GetSection("Jwt");
+            var key = jwtSettings.GetSection("Key").Value;
+            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(20),
-                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(secret, SecurityAlgorithms.HmacSha256));
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
