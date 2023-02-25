@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VPark_Models;
+using VPark_Models.Dtos.PaystackDto;
 
 namespace VPark_Core.Repositories.Interfaces
 {
     public interface IPaystackRepository
     {
-        Task CreatePaymentAsync(string PaystackRef, string paymentReference, string amount, string bookingId);
-        Task<Payment> GetPaymentByReferenceAsync(string paymentRef);
+        Task<PaystackResponseDto> InitializePaystackTransaction(PaystackRequestDto paystackReqDto, string bookingId);
+        Task<PaystackVerifyPaymentDto> VerifyPaymentReference(string paystackRef, string parkingSpaceId);
+        Task<PaystackResponseDto> ChargeSavedCard(PaystackRequestDto chargeCardReq, string bookingId);
+
     }
 }

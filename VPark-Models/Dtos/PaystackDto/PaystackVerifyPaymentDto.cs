@@ -19,5 +19,19 @@ namespace VPark_Models.Dtos.PaystackDto
         public string Status { get; set; }
         public string Reference { get; set; }
         public int Amount { get; set; }
+        public Authorization authorization { get; set; }    
+        public Customer Customer { get; set; }    
+
+    }
+
+    public class Authorization
+    {
+        public string authorization_code { get; set; }
+        public bool reusable { get; set; }
+    }
+
+    public class Customer
+    {
+        public string Email { get; set; }
     }
 }

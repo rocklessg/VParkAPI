@@ -14,15 +14,17 @@ namespace VPark.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IPaystackRepository _paystackRepository;
         private readonly IServiceFee _serviceFee;
         private readonly IConfiguration _config;
 
         public PaymentController(IPaymentRepository paymentRepository, ILogger<PaymentController> logger,
-            IServiceFee serviceFee, IConfiguration config)
+            IServiceFee serviceFee, IConfiguration config, IPaystackRepository paystackRepository)
         {
             _paymentRepository = paymentRepository;
             _serviceFee = serviceFee;
             _config = config;
+            _paystackRepository = paystackRepository;
         }
 
         [HttpPost("Add-Payment")]
@@ -62,27 +64,26 @@ namespace VPark.Controllers
             return Ok(response);    
         }
 
-       
 
-        //[HttpPost("Charge-Savedcard")]
-        //public async Task<IActionResult> ChargeSavedCard(string email, string amount)
-        //{
-        //    var response = await _paymentRepository.ChargeSavedCard(email, amount);
-        //    return Ok(response);
-        //}
+        [HttpPost("Charge-SavedCard")]
+        public async Task<IActionResult> ChargeSavedCard(PaystackRequestDto chargeCard, string bookingId)
+        {
+            var response = await _paystackRepository.ChargeSavedCard(chargeCard, bookingId);
+            return Ok(response);    
+        }
        
 
         [HttpPost("Paystack-initializepayment")]
         public async Task<IActionResult> InitializePaystackPayment(PaystackRequestDto paystackReqDto, string bookingId)
         {
-            var response = await _paymentRepository.InitializePaystackTransaction(paystackReqDto, bookingId);
+            var response = await _paystackRepository.InitializePaystackTransaction(paystackReqDto, bookingId);
             return Ok(response);
         }
 
         [HttpGet("Verify-payment")]
-        public async Task<IActionResult> VerifyPaystackPayment(string reference)
+        public async Task<IActionResult> VerifyPaystackPayment(string reference, string bookingId)
         {
-            var response = await _paymentRepository.VerifyPaymentReference(reference);
+            var response = await _paystackRepository.VerifyPaymentReference(reference, bookingId);
             return Ok(response);
         }
 

@@ -16,26 +16,26 @@ namespace VPark_Models.Dtos.PaystackDto
 
         [JsonProperty("amount")]
         public string Amount { get; set; }
+
+        public string authorization_code { get; set; }
         public string PaymentReference { get; set; } = string.Empty;
     }
 
     public class ChargeResponseDto
     {
-        [JsonProperty("status")]
-        public string Status { get; set; }
-
-        [JsonProperty("message")]
-        public string Message { get; set; }
-
-        [JsonProperty("data")]
-        public ChargeCardResponseData Data { get; set; }
+        public bool status { get; set; }
+        public string message { get; set; }
+        public SavedCardData Data { get; set; }
     }
 
-    public class ChargeCardResponseData
+    public class SavedCardData
     {
 
         [JsonProperty("reference")]
         public string Reference { get; set; }
+        public string authorization_url { get; set; }
+        public string access_code { get; set; }
+        public bool paused { get; set; }
     }
 
 }
