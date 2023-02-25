@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using VPark_Models.Models;
 using static System.Net.WebRequestMethods;
 
 namespace VPark.Extensions
@@ -30,12 +31,11 @@ namespace VPark.Extensions
 
         public static void ResolveJwt(this IServiceCollection services, IConfiguration configuration)
         {
-
             var jwtSettings = configuration.GetSection("Jwt");
             //var key = Environment.GetEnvironmentVariable("KEY");
             var key = jwtSettings.GetSection("Key").Value;
 
-            services.AddAuthentication(o =>
+            _ = services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -52,6 +52,12 @@ namespace VPark.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
+        }
+
+        public static void ResolvePayStack(this IServiceCollection services, IConfiguration configuration)
+        {
+            configuration.GetSection("Paystack");
+            services.Configure<PaystackSettings>(configuration);
         }
     }
 }

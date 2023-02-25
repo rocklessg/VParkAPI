@@ -16,4 +16,10 @@ namespace VPark_Models.Dtos.PaymentDto
         public DateTime UpdatedAt { get; set; }
         public string BookingId { get; set; }
     }
+
+    public class PaymentResponse
+    {
+        public string PaymentReference { get; set; }
+        public decimal Amount { get; set; }
+    }
 }

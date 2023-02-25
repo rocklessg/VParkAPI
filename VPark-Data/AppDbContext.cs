@@ -33,6 +33,7 @@ namespace VPark_Data
         public DbSet<ParkingSpace> ParkingSpaces { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<CardDetails> CardDetails { get; set; }
+        public DbSet<CardAuthorization> CardAuthorizations { get; set; }
 
     }
 }

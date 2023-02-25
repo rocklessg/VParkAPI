@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VPark_Data;
@@ -11,9 +12,10 @@ using VPark_Data;
 namespace VPark_Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230216151537_PinColumn")]
+    partial class PinColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,32 +284,6 @@ namespace VPark_Data.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("VPark_Models.Models.CardAuthorization", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
-
-                    b.Property<string>("AuthorizationCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AuthorizationUrl")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CardAuthorizations");
-                });
-
             modelBuilder.Entity("VPark_Models.Models.CardDetails", b =>
                 {
                     b.Property<string>("Id")
@@ -404,9 +380,6 @@ namespace VPark_Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentReference")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PaystackRef")
                         .HasColumnType("text");
 
                     b.Property<int>("Status")
