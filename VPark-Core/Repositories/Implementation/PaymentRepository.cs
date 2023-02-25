@@ -15,6 +15,9 @@ using VPark_Models.Dtos;
 using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos.PaystackDto;
+using VPark_Models.Dtos.BookingDtos;
+using VPark_Models.Dtos.PaymentDto;
+using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -121,6 +124,7 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
+                    
                     return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
                 }
 
