@@ -23,6 +23,9 @@ namespace VPark_Models.Models
         [Required]
         [StringLength(3)]  
         public string CVV { get; set; }
+        [Required]
+        [StringLength(3)]
+        public string Pin { get; set; }
 
         //Nav properties
         public string appUserId { get; set; }

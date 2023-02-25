@@ -1,23 +1,23 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PayStack.Net;
+using System.Globalization;
+using System.Security.AccessControl;
 using VPark_Core.Repositories.Interfaces;
 using VPark_Data;
 using VPark_Helper;
+using VPark_Helper.Request;
 using VPark_Models;
 using VPark_Models.Dtos;
+using VPark_Models.Dtos.CardDetailsDtos;
+using VPark_Models.Dtos.PaymentDto;
+using VPark_Models.Dtos.PaystackDto;
 using VPark_Models.Dtos.BookingDtos;
 using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos.CardDetailsDtos;
-
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -29,7 +29,6 @@ namespace VPark_Core.Repositories.Implementation
         private readonly IServiceFee _serviceFee;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMapper _mapper;
-
         public PaymentRepository(AppDbContext context,
             ILogger<PaymentRepository> logger, IServiceFee serviceFee, UserManager<IdentityUser> userManager, IMapper mapper)
         {
@@ -37,13 +36,30 @@ namespace VPark_Core.Repositories.Implementation
             _logger = logger;
             _serviceFee = serviceFee;
             _userManager = userManager;
-            _mapper = mapper;
+            _mapper = mapper; 
+        }
+
+        public async Task CreatePaymentAsync(string paystackRef, string paymentReference, string amount, string bookingId)
+        {
+            var payment = new Payment();
+            payment.BookingId = bookingId;
+            payment.Amount = Convert.ToDecimal(amount);
+            payment.PaystackRef = paystackRef;
+            payment.PaymentReference = paymentReference;
+            payment.Status = Status.Pending;
+            payment.PaymentMethod = PaymentMethod.Card;
+            payment.CreatedAt = DateTime.UtcNow;
+            payment.UpdatedAt = DateTime.UtcNow;
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Payment> GetPaymentByReferenceAsync(string paymentRef)
+        {
+            var result = await _context.Payments.FirstOrDefaultAsync(x => x.PaystackRef == paymentRef);
+            return result;
         }
 
         public async Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto paymentDto, string bookingId)
-
-
-        public async Task<Response<PaymentDto>> AddPayment(PaymentDto paymentDto, string bookingId)
         {
             if (bookingId == null)
             {
@@ -108,7 +124,8 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
-                    return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId", StatusCode = StatusCodes.Status404NotFound };
+                    
+                    return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
                 }
 
                 payment.Status = Status.Success;
@@ -132,13 +149,13 @@ namespace VPark_Core.Repositories.Implementation
 
 
         }
-        public async Task<Response<CardDetailsDto>> AddCard(CardDetailsDto cards, string appUserId)
+        public async Task<Response<CardAuthorizeResponseDto>> AddCard(AuthorizeCardDto cards, string appUserId)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
             if (user == null)
             {
                 _logger.LogError($"{nameof(AddCard)} USER WITH id: {appUserId} NOT FOUND IN THE DATABASE AT: {DateTime.Now}");
-                return new Response<CardDetailsDto> { Succeeded = false, Message = "Invalid User", StatusCode = StatusCodes.Status400BadRequest };
+                return new Response<CardAuthorizeResponseDto> { Succeeded = false, Message = "Invalid User" };
             }
             else
             {
@@ -147,7 +164,7 @@ namespace VPark_Core.Repositories.Implementation
                 await _context.AddAsync(cardDetails);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"{nameof(AddCard)} USER CARD DETAILS SUCCESSFULLY SAVED TO DATABASE AT: {DateTime.Now}");
-                return new Response<CardDetailsDto> { Succeeded = true, Message = "Card details successfully Added" };
+                return new Response<CardAuthorizeResponseDto> { Succeeded = true, Message = "Card details successfully Added" };
             }
         }
         public async Task<Response<IEnumerable<CardDetails>>> GetAllCardsAsync()
@@ -160,7 +177,7 @@ namespace VPark_Core.Repositories.Implementation
                 Succeeded = true,
                 Message = "List of all Cards",
                 Data = getAllcards,
-                StatusCode = StatusCodes.Status200OK
+
             };
         }
         public async Task<Response<CardDetails>> GetCardByUserId(string cardId)
@@ -196,7 +213,7 @@ namespace VPark_Core.Repositories.Implementation
                     {
                         Message = $"Successfully removed card",
                         Succeeded = true,
-                        StatusCode = StatusCodes.Status200OK
+
                     };
                 }
                 else
@@ -216,10 +233,9 @@ namespace VPark_Core.Repositories.Implementation
                 {
                     Message = $"Record Not found",
                     Succeeded = false,
-                    StatusCode = StatusCodes.Status404NotFound
+
                 };
             }
         }
     }
 }
-

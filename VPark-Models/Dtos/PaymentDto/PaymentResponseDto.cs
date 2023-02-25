@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +15,11 @@ namespace VPark_Models.Dtos.PaymentDto
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string BookingId { get; set; }
+    }
+
+    public class PaymentResponse
+    {
+        public string PaymentReference { get; set; }
+        public decimal Amount { get; set; }
     }
 }
