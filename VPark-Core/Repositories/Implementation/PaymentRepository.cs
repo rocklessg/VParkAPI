@@ -13,6 +13,7 @@ using VPark_Helper.Request;
 using VPark_Models;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.CardDetailsDtos;
+using VPark_Models.Dtos.PaymentDto;
 using VPark_Models.Dtos.PaystackDto;
 using VPark_Models.Models;
 
@@ -55,7 +56,7 @@ namespace VPark_Core.Repositories.Implementation
             return result;
         }
 
-        public async Task<Response<PaymentDto>> AddPayment(PaymentDto paymentDto, string bookingId)
+        public async Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto paymentDto, string bookingId)
         {
             if (bookingId == null)
             {
@@ -120,7 +121,7 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
-                    return new Response<PaymentDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
+                    return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
                 }
 
                 payment.Status = Status.Success;
