@@ -51,6 +51,15 @@ builder.Services.ResolveSwaggerAuthorization();
 
 builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
+// Configure CORS
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowAll", builder =>
+    builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,6 +73,7 @@ app.UseSwaggerUI();
 
 app.UseRouting();
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
