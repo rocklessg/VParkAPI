@@ -28,6 +28,7 @@ namespace VPark_Core.Repositories.Implementation
         private readonly IConfiguration _config;
         private PayStackApi PayStack { get; set; }
         private readonly string token;
+
         public PaystackRepository(AppDbContext context, ILogger<PaystackRepository> logger, IHttpServices httpService, IPaymentRepository paymentRepository, IConfiguration config)
         {
             _context = context;

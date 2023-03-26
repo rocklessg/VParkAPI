@@ -17,10 +17,10 @@ namespace VPark_Core.Repositories.Interfaces
 
         Task<Response<CardAuthorizeResponseDto>> AddCard(AuthorizeCardDto cards, string appUserId);
         Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto payment, string bookingId);
-        Task<Response<CardDetailsDto>> AddCard(CardDetailsDto cards, string appUserId);
+       // Task<Response<CardDetailsDto>> AddCard(CardDetailsDto cards, string appUserId);
         Task<Response<IEnumerable<CardDetails>>> GetAllCardsAsync();
         Task<Response<CardDetails>> GetCardByUserId(string cardId);
-        Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto payment, string bookingId);
+       // Task<Response<PaymentResponseDto>> AddPayment(PaymentResponseDto payment, string bookingId);
         Task<Response<string>> RemoveCard(string cardId);
         Task CreatePaymentAsync(string PaystackRef, string paymentReference, string amount, string bookingId);
         Task<Payment> GetPaymentByReferenceAsync(string paymentRef);

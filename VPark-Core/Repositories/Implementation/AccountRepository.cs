@@ -39,7 +39,8 @@ namespace VPark_Core.Repositories.Implementation
             var user = _mapper.Map<AppUser>(register);
             user.UserName = register.EmailAddress;
             user.Email = register.EmailAddress;
-            
+            user.CreatedAt = DateTime.UtcNow;
+            user.ModifiedAt = DateTime.UtcNow;
 
             var result = await _userManager.CreateAsync(user, register.Password);
             _logger.LogInformation(message: $"new user with UserName:{register.EmailAddress} created", register);

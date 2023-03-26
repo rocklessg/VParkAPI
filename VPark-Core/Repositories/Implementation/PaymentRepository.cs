@@ -14,10 +14,6 @@ using VPark_Models;
 using VPark_Models.Dtos;
 using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Dtos.PaymentDto;
-using VPark_Models.Dtos.PaystackDto;
-using VPark_Models.Dtos.BookingDtos;
-using VPark_Models.Dtos.PaymentDto;
-using VPark_Models.Dtos.CardDetailsDtos;
 using VPark_Models.Models;
 
 namespace VPark_Core.Repositories.Implementation
@@ -36,7 +32,7 @@ namespace VPark_Core.Repositories.Implementation
             _logger = logger;
             _serviceFee = serviceFee;
             _userManager = userManager;
-            _mapper = mapper; 
+            _mapper = mapper;
         }
 
         public async Task CreatePaymentAsync(string paystackRef, string paymentReference, string amount, string bookingId)
@@ -108,7 +104,7 @@ namespace VPark_Core.Repositories.Implementation
             await _context.SaveChangesAsync();
 
             /*   Implement card payment logic here && Bank transfer payment logic
-                 from here, we check the payment status from NIP or MiFOS (Or any payment get way we used)
+                 from here, we check the payment status from NIP or MiFOS (Or any payment gateway we used)
                  if the response status is successful, we will update the
                  payment status from pending to success,
                  we will update the PaymentStatus in booking table to true,
@@ -124,7 +120,7 @@ namespace VPark_Core.Repositories.Implementation
                 if (parkingSpaceToBook == null)
                 {
                     _logger.LogInformation("Parking Space not found", nameof(parkingSpaceToBook));
-                    
+
                     return new Response<PaymentResponseDto> { Succeeded = false, Message = "Invalid ParkingSpaceId" };
                 }
 
