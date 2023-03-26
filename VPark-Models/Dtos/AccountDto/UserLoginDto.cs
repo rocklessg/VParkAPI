@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -18,8 +19,7 @@ namespace VPark_Models.Dtos.AccountDto
         [StringLength(50, MinimumLength = 5)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        [Display(Name = "Remember me?")]
+        [DefaultValue(false)]
         public bool RememberMe { get; set; }
     }
 }

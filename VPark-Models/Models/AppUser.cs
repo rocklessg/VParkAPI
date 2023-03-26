@@ -15,6 +15,6 @@ namespace VPark_Models.Models
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public Customer Customer { get; set; }
-        public IEnumerable<CardDetails> CardsDetails { get; set; }   
+        public IEnumerable<CardDetails> CardsDetails { get; set; }
     }
 }
