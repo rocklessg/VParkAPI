@@ -32,7 +32,6 @@ namespace VPark_Core.Repositories.Implementation
             _configuration = configuration;
             _mapper = mapper;
         }
-
         public async Task<Response<UserDto>> Register(UserRegisterationDto register)
         {
             _logger.LogInformation(message: "Attempting to create a new user", register);
@@ -60,7 +59,6 @@ namespace VPark_Core.Repositories.Implementation
                 Message = "User Registered Successfully",
             };
         }
-
         public async Task<Response<IdentityResult>> Login(UserLoginDto login)
         {
             _logger.LogInformation(message: $"Attempt to login by User with Email: {login.Email}", login);
@@ -94,7 +92,6 @@ namespace VPark_Core.Repositories.Implementation
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = jwtSettings.GetSection("Key").Value;
             var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

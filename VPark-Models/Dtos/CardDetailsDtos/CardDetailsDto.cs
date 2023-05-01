@@ -44,7 +44,6 @@ namespace VPark_Models.Dtos.CardDetailsDtos
         [JsonProperty("Pin")]
         [StringLength(4)]
         public string Pin { get; set; }
-
     }
 
     public class CardAuthorizeResponseDto
