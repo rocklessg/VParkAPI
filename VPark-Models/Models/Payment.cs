@@ -9,7 +9,7 @@ namespace VPark_Models
         public string PaymentReference { get; set; }
         public string PaystackRef { get; set; }
         public decimal Amount { get; set; }
-        public Status Status { get; set; }     
+        public Status Status { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public string BookingId { get; set; }
         public Booking Booking { get; set; }
